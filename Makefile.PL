@@ -7,6 +7,14 @@ license  'perl';
 
 build_requires 'Test::More';
 
+requires 'Getopt::Long';
+requires 'Moose';
+requires 'Net::TFTP';
+requires 'Sys::Hostname';
+requires 'Socket';
+requires 'YAML::Syck';
+
+
 auto_install;
 
 WriteAll;
