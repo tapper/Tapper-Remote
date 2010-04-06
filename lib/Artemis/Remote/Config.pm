@@ -1,25 +1,23 @@
-package Artemis::Installer::Config;
+package Artemis::Remote::Config;
 
 use strict;
 use warnings;
 
 use Getopt::Long;
-use Log::Log4perl;
-use Method::Signatures;
 use Moose;
 use Net::TFTP;
-use Socket;
+use Socket;   # for inet_aton and gethostbyname
 use Sys::Hostname;
 use YAML::Syck;
 
 
 =head1 NAME
 
-Artemis::Config::Consumer - Get configuration from Artemis host
+Artemis::Remote::Config - Get configuration from Artemis host
 
 =head1 SYNOPSIS
 
- use Artemis::Config::Consumer;
+ use Artemis::Remote::Config;
 
 =head1 FUNCTIONS
 
@@ -34,12 +32,14 @@ Get hostname of artemis MCP host from kernel boot parameters.
 
 =cut
 
-method get_artemis_host()
+sub get_artemis_host
 {
         # try options set on command line
-        my ($host,$port);
-        Getopt::Long::GetOptions("host=s" => \$host,
-                                 "port=s" => \$port,);
+        my ($host,$port, $help);
+        Getopt::Long::GetOptions("host=s"   => \$host,
+                                 "port=s"   => \$port,
+                                 "help|h=s" => \$help,);
+        die "Usage: $0 [--host=$host --port=$port]" if $help;
         return($host,$port) if $host;
 
         # try kernel command line
@@ -57,7 +57,7 @@ method get_artemis_host()
         }
 
         # try multicast
-};
+}
 
 
 =head2 gethostname
@@ -71,38 +71,19 @@ hostname is set to the DNS hostname associated to this IP address.
 
 =cut
 
-method gethostname
+sub gethostname
 {
-	my $hostname = Sys::Hostname::hostname();
+	my ($self) = @_;
+        my $hostname = Sys::Hostname::hostname();
 	if ($hostname   =~ m/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/) {
                 ($hostname) = gethostbyaddr(inet_aton($hostname), AF_INET) or ( print("Can't get hostname: $!") and exit 1);
                 $hostname   =~ s/^(\w+?)\..+$/$1/;
                 system("hostname", "$hostname");
         }
 	return $hostname;
-};
+}
 
 
-
-=head2 img_cmp
-
-Compare two images so that sort() can sort the root image (to be mounted on
-"/") in front of all others. It expects no parameters but instead uses the
-global variables $a and $b provided by sort().
-
-
-@return -1 if left image is root image
-         1 if right image is root image
-         0 else
-
-=cut
-
-method img_cmp()
-{
-        return -1 if $a->{mount} eq '/';
-        return  1 if $b->{mount} eq '/';
-        return  0;
-};
 
 
 
@@ -119,27 +100,27 @@ so on.
 
 =cut
 
-method get_local_data($state)
+sub get_local_data
 {
+        my ($self, $state) = @_;
         # logger will usually be initialised by caller
-        my $logger = Log::Log4perl->get_logger('installer.getconf');
-        my $file;
-        my $tmpcfg={}; # needed to set config options only used in some states
+        my $tmpcfg={};
 
-        my $hostname      = $self->gethostname();
-        my ($server, $port) = $self->get_artemis_host();
-        my $tftp          = Net::TFTP->new($server);
-        $logger->debug("Fetching $hostname-$state from $server");
-        $file             = $tftp->get("$hostname-$state") or return("Can't get local data.",$tftp->error);
-        $tmpcfg->{server} = $server;
-        $tmpcfg->{port}   = $port;
-
-        my $config = YAML::Syck::LoadFile($file) or return ("Can't parse config received from server");
-        $config->{hostname} = $hostname;
-        # even though, this should always be set, provide as much information as we can 
-        if ($config->{images} and ref($config->{images}) eq "ARRAY") {
-                @{$config->{images}}=sort img_cmp @{$config->{images}}; # root partition has to be first
+        my $config_file_name = '/etc/artemis';
+        $config_file_name = $ENV{ARTEMIS_CONFIG} if $ENV{ARTEMIS_CONFIG};
+        if (not -e $config_file_name) {
+                my $hostname;
+                $hostname           = $self->gethostname();
+                my ($server, $port) = $self->get_artemis_host();
+                my $tftp            = Net::TFTP->new($server);
+                $tftp->get("$hostname-$state", $config_file_name) or return("Can't get local data.",$tftp->error);
+                $tmpcfg->{server}   = $server;
+                $tmpcfg->{port}     = $port;
+                $tmpcfg->{hostname} = $hostname;
         }
+
+        my $config = YAML::Syck::LoadFile($config_file_name) or return ("Can't parse config received from server");
+        $config->{filename} = $config_file_name;
         %$config=(%$config, %$tmpcfg);
 
         return $config;
