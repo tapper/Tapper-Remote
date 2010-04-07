@@ -39,7 +39,7 @@ sub get_artemis_host
         Getopt::Long::GetOptions("host=s"   => \$host,
                                  "port=s"   => \$port,
                                  "help|h=s" => \$help,);
-        die "Usage: $0 [--host=$host --port=$port]" if $help;
+        die "Usage: $0 [--host=host --port=port --config=file]" if $help;
         return($host,$port) if $host;
 
         # try kernel command line
@@ -108,6 +108,12 @@ sub get_local_data
 
         my $config_file_name = '/etc/artemis';
         $config_file_name = $ENV{ARTEMIS_CONFIG} if $ENV{ARTEMIS_CONFIG};
+
+        my $help;
+        Getopt::Long::GetOptions("file=s"   => \$config_file_name,
+                                 "help|h=s" => \$help,);
+        die "Usage: $0 [--host=host --port=port --config=file]" if $help;
+
         if (not -e $config_file_name) {
                 my $hostname;
                 $hostname           = $self->gethostname();
@@ -125,9 +131,6 @@ sub get_local_data
 
         return $config;
 }
-;
-
-
 
 
 1;
