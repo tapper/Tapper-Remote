@@ -34,14 +34,7 @@ Get hostname of artemis MCP host from kernel boot parameters.
 
 sub get_artemis_host
 {
-        # try options set on command line
-        my ($host,$port, $help);
-        Getopt::Long::GetOptions("host=s"   => \$host,
-                                 "port=s"   => \$port,
-                                 "help|h=s" => \$help,);
-        die "Usage: $0 [--host=host --port=port --config=file]" if $help;
-        return($host,$port) if $host;
-
+        my ($host, $port);
         # try kernel command line
         open FH,'<','/proc/cmdline';
         my $cmd_line = <FH>;
@@ -109,15 +102,17 @@ sub get_local_data
         my $config_file_name = '/etc/artemis';
         $config_file_name = $ENV{ARTEMIS_CONFIG} if $ENV{ARTEMIS_CONFIG};
 
-        my $help;
-        Getopt::Long::GetOptions("file=s"   => \$config_file_name,
-                                 "help|h=s" => \$help,);
-        die "Usage: $0 [--host=host --port=port --config=file]" if $help;
+        my ($server, $port, $help);
+        Getopt::Long::GetOptions("host=s"   => \$server,
+                                 "port=s"   => \$port,
+                                 "config=s" => \$config_file_name,
+                                 "help|h"   => \$help,);
+        die "Usage: $0 [--host=host --port=port --config=file]\n" if $help;
 
         if (not -e $config_file_name) {
                 my $hostname;
                 $hostname           = $self->gethostname();
-                my ($server, $port) = $self->get_artemis_host();
+                ($server, $port)    = $self->get_artemis_host() if not $server;
                 my $tftp            = Net::TFTP->new($server);
                 $tftp->get("$hostname-$state", $config_file_name) or return("Can't get local data.",$tftp->error);
                 $tmpcfg->{server}   = $server;
