@@ -5,6 +5,8 @@ use warnings;
 
 use Moose;
 
+extends 'Artemis::Remote';
+
 =head1 NAME
 
 Artemis::Remote::Net - Communication with MCP
@@ -15,9 +17,30 @@ Artemis::Remote::Net - Communication with MCP
 
 =head1 FUNCTIONS
 
+
+=head2 mcp_inform
+
+Simplify sending messages to MCP. Expects message as string.
+
+@param string - message to send to MCP
+
+@return success - 0
+@return error   - -1
+
+=cut
+
+sub mcp_inform
+{
+        my ($self, $msg) = @_;
+        my $message = {state => $msg};
+        return $self->mcp_send($message);
+}
+
+
 =head2 mcp_send
 
-Tell the MCP server our current status. This is done using a TCP connection.
+Tell the MCP server our current status. This is done using a TCP
+connection. Expects message as a hash.
 
 @param string - message to send to MCP
 
