@@ -4,6 +4,15 @@ use warnings;
 use strict;
 use Moose;
 
+has cfg =>  (is => 'rw', isa => 'HashRef', default => sub {{mcp_port => 7357, mcp_host => 'localhost'}});
+
+sub BUILD
+{
+        my ($self, $config) = @_;
+        $self->{cfg}=$config;
+}
+
+
 =head1 NAME
 
 Artemis::Remote - Common functionality for all remote projects!
@@ -14,7 +23,7 @@ Version 0.01
 
 =cut
 
-our $VERSION = '1.000010';
+our $VERSION = '1.000013';
 
 
 =head1 SYNOPSIS
