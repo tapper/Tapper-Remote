@@ -72,6 +72,8 @@ sub gethostname
                 ($hostname) = gethostbyaddr(inet_aton($hostname), AF_INET) or ( print("Can't get hostname: $!") and exit 1);
                 $hostname   =~ s/^(\w+?)\..+$/$1/;
                 system("hostname", "$hostname");
+        } elsif ($hostname  =~ m/^([^.]+)./) {
+                $hostname   = $1;
         }
 	return $hostname;
 }
