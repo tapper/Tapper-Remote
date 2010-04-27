@@ -4,6 +4,7 @@ use warnings;
 use strict;
 use Moose;
 
+extends 'Artemis::Base';
 has cfg =>  (is => 'rw', isa => 'HashRef', default => sub {{mcp_port => 7357, mcp_host => 'localhost'}});
 
 sub BUILD
@@ -23,7 +24,7 @@ Version 0.01
 
 =cut
 
-our $VERSION = '1.000013';
+our $VERSION = '1.000016';
 
 
 =head1 SYNOPSIS
