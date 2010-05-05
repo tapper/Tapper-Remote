@@ -1,12 +1,11 @@
 use strict;
-use warnings;
+# use warnings;
 
 use Test::More;
 use Test::MockModule;
 
 BEGIN {
         use_ok('Artemis::Remote::Config');
-        use_ok('Artemis::Remote::Net');
  }
 
 my $cfg = Artemis::Remote::Config->new();
