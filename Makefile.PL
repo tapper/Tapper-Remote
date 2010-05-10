@@ -13,7 +13,7 @@ requires 'Net::TFTP';
 requires 'Sys::Hostname';
 requires 'Socket';
 requires 'YAML::Syck';
-
+requires 'IO::Socket::INET';
 
 auto_install;
 
