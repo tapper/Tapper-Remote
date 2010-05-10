@@ -7,6 +7,8 @@ use Moose;
 
 extends 'Artemis::Remote';
 
+use IO::Socket::INET;
+
 =head1 NAME
 
 Artemis::Remote::Net - Communication with MCP
@@ -67,6 +69,84 @@ sub mcp_send
         return(0);
 }
 
+
+=head2 tap_report_away
+
+Actually send the tap report to receiver.
+
+@param string - report to be sent
+
+@return success - (0, report id)
+@return error   - (1, error string)
+
+=cut
+
+sub tap_report_away
+{
+        my ($self, $tap) = @_;
+        my $reportid;
+        if (my $sock = IO::Socket::INET->new(PeerAddr => $self->cfg->{report_server},
+					     PeerPort => $self->cfg->{report_port},
+					     Proto    => 'tcp')) {
+                eval{
+                        my $timeout = 100;
+                        local $SIG{ALRM}=sub{die("timeout for sending tap report ($timeout seconds) reached.");};
+                        alarm($timeout);
+                        ($reportid) = <$sock> =~m/(\d+)$/g;
+                        $sock->print($tap);
+                };
+                alarm(0);
+                $self->log->error($@) if $@;
+		close $sock;
+	} else {
+                return(1,"Can not connect to report server: $!");
+	}
+        return (0,$reportid);
+
+}
+
+
+=head2 tap_report_create
+
+Create a report string from a report in hash form. Since the function only
+does data transformation, no error should ever occur.
+The expected hash should contain the following keys:
+* tests    - contains an array of hashes with
+** error   - indicated whether this test failed (if true)
+** test    - description of the test
+* headers  - Artemis headers with values
+* sections - array of hashes containing tests and headers ad described above and
+             a section_name
+
+@param hash ref -  report data
+
+@return report string
+
+=cut
+
+sub tap_report_create
+{
+        my ($self, $report) = @_;
+        my $message;
+        my @tests = @{$report->{tests}};
+
+        $message .= "1..".int (@tests);
+        $message .= "\n";
+        foreach my $header (keys %{$report->{headers}}) {
+                $message .= "# $header: ";
+                $message .= $report->{headers}->{$header};
+                $message .= "\n";
+        }
+
+        # @tests starts with 0, reports start with 1
+        for (my $i=1; $i<=@tests; $i++) {
+                $message .= "not " if $tests[$i-1]->{error};
+                $message .="ok $i - ";
+                $message .= $tests[$i-1]->{test} if $tests[$i-1]->{test};
+                $message .="\n";
+        }
+        return ($message);
+}
 
 
 1;
