@@ -104,6 +104,9 @@ sub get_local_data
         my $config_file_name = '/etc/artemis';
         $config_file_name = $ENV{ARTEMIS_CONFIG} if $ENV{ARTEMIS_CONFIG};
 
+        my $hostname = $self->gethostname();
+
+
         my ($server, $port, $help);
         Getopt::Long::GetOptions("host=s"   => \$server,
                                  "port=s"   => \$port,
@@ -111,9 +114,7 @@ sub get_local_data
                                  "help|h"   => \$help,);
         die "Usage: $0 [--host=host --port=port --config=file]\n" if $help;
 
-        if (not -e $config_file_name) {
-                my $hostname;
-                $hostname           = $self->gethostname();
+        if ($state eq 'install' or (not -e $config_file_name)) {
                 ($server, $port)    = $self->get_artemis_host() if not $server;
                 my $tftp            = Net::TFTP->new($server);
                 $tftp->get("$hostname-$state", $config_file_name) or return("Can't get local data.",$tftp->error);
@@ -124,6 +125,7 @@ sub get_local_data
 
         my $config = YAML::Syck::LoadFile($config_file_name) or return ("Can't parse config received from server");
         $config->{filename} = $config_file_name;
+        $config->{hostname} = $hostname;
         %$config=(%$config, %$tmpcfg);
 
         return $config;
