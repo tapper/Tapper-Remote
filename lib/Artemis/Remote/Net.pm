@@ -8,6 +8,7 @@ use Moose;
 extends 'Artemis::Remote';
 
 use IO::Socket::INET;
+use YAML;
 
 =head1 NAME
 
@@ -57,6 +58,7 @@ sub mcp_send
         my $server = $self->cfg->{mcp_host} or return "MCP host unknown";
         my $port   = $self->cfg->{mcp_port} || 7357;
 
+
         my $yaml = Dump($message);
 	if (my $sock = IO::Socket::INET->new(PeerAddr => $server,
 					     PeerPort => $port,
@@ -64,9 +66,13 @@ sub mcp_send
 		print $sock ("$yaml");
 		close $sock;
 	} else {
-                return("Can't connect to MCP: $!");
+                $self->log->error("Can't connect to MCP: $!");
 	}
-        return(0);
+
+        my $report_file = $self->cfg->{files}{report_file};
+        $self->cfg($self->get_report_file($self->cfg)) if not $report_file;
+
+        return $self->atomic_write($report_file, $yaml);
 }
 
 

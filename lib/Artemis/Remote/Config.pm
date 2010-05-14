@@ -80,8 +80,6 @@ sub gethostname
 
 
 
-
-
 =head2 get_local_data
 
 Get local data needed for all tools running locally on NFS. The function tries
@@ -128,6 +126,7 @@ sub get_local_data
         $config->{hostname} = $hostname;
         %$config=(%$config, %$tmpcfg);
 
+        $config = $self->get_report_file($config);
         return $config;
 }
 
