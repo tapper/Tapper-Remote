@@ -125,7 +125,7 @@ sub get_local_data
 
         my $config = YAML::Syck::LoadFile($config_file_name) or return ("Can't parse config received from server");
         $config->{filename} = $config_file_name;
-        $config->{hostname} = $hostname;
+        $config->{hostname} = $hostname unless $config->{hostname};
         %$config=(%$config, %$tmpcfg);
 
         return $config;
