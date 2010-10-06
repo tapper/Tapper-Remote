@@ -36,9 +36,9 @@ sub get_artemis_host
 {
         my ($host, $port);
         # try kernel command line
-        open FH,'<','/proc/cmdline';
-        my $cmd_line = <FH>;
-        close FH;
+        open my $FH,'<','/proc/cmdline';
+        my $cmd_line = <$FH>;
+        close $FH;
         ($host,undef,$port) = $cmd_line =~ m/artemis_host\s*=\s*(\w+)(:(\d+))?/;
         return($host,$port) if $host;
 
