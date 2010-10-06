@@ -6,6 +6,7 @@ author   'OSRC SysInt Team <osrc-sysint@elbe.amd.com>';
 license  'perl';
 
 build_requires 'Test::More';
+build_requires 'Test::Perl::Critic';
 
 requires 'Getopt::Long';
 requires 'Moose';
