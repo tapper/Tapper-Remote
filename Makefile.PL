@@ -11,6 +11,7 @@ build_requires 'Test::Perl::Critic';
 requires 'Getopt::Long';
 requires 'Moose';
 requires 'Net::TFTP';
+requires 'File::Path';
 requires 'Sys::Hostname';
 requires 'Socket';
 requires 'YAML::Syck';
