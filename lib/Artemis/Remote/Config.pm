@@ -36,9 +36,9 @@ sub get_artemis_host
 {
         my ($host, $port);
         # try kernel command line
-        open FH,'<','/proc/cmdline';
-        my $cmd_line = <FH>;
-        close FH;
+        open my $FH,'<','/proc/cmdline';
+        my $cmd_line = <$FH>;
+        close $FH;
         ($host,undef,$port) = $cmd_line =~ m/artemis_host\s*=\s*(\w+)(:(\d+))?/;
         return($host,$port) if $host;
 
@@ -123,7 +123,7 @@ sub get_local_data
 
         my $config = YAML::Syck::LoadFile($config_file_name) or return ("Can't parse config received from server");
         $config->{filename} = $config_file_name;
-        $config->{hostname} = $hostname;
+        $config->{hostname} = $hostname unless $config->{hostname};
         %$config=(%$config, %$tmpcfg);
 
         $config = $self->get_report_file($config);
