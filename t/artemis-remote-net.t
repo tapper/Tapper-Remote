@@ -5,7 +5,6 @@ use warnings;
 use Test::More;
 use Test::MockModule;
 
-use File::Temp qw /tempdir tempfile/;
 use Log::Log4perl;
 use YAML;
 
@@ -21,11 +20,8 @@ log4perl.appender.root.stderr = 1
 log4perl.appender.root.layout = SimpleLayout";
 Log::Log4perl->init(\$string);
 
-my  $dir = tempdir( CLEANUP => 1 );
-my (undef, $report_file) = tempfile( DIR => $dir );
 
-
-my $config = {files => {report_file => $report_file},
+my $config = {
               mcp_host => 'localhost',
              };
               
@@ -52,12 +48,5 @@ my $retval = $net->mcp_inform('start-install');
 
 # testing message sending is more complex; ignore it for now
 is($retval, 0, 'No error in writing status message');
-
-my $msg;
-eval{
-        $msg = YAML::LoadFile($report_file);
-};
-is($@, '', 'Loading report file');
-is_deeply($msg, {state => 'start-install'}, 'Writing message to report file');
 
 done_testing;
