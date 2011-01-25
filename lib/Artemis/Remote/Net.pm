@@ -69,10 +69,7 @@ sub mcp_send
                 $self->log->error("Can't connect to MCP: $!");
 	}
 
-        my $report_file = $self->cfg->{files}{report_file};
-        $self->cfg($self->get_report_file($self->cfg)) if not $report_file;
-
-        return $self->atomic_write($report_file, $yaml);
+        return 0;
 }
 
 

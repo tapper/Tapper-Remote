@@ -126,7 +126,6 @@ sub get_local_data
         $config->{hostname} = $hostname unless $config->{hostname};
         %$config=(%$config, %$tmpcfg);
 
-        $config = $self->get_report_file($config);
         return $config;
 }
 
