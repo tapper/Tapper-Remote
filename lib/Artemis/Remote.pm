@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use Moose;
 
-extends 'Artemis::Base';
+extends 'Tapper::Base';
 has cfg =>  (is => 'rw', isa => 'HashRef', default => sub {{mcp_port => 7357, mcp_host => 'localhost'}});
 
 sub BUILD
