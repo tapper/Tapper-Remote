@@ -1,4 +1,4 @@
-package Artemis::Remote;
+package Tapper::Remote;
 
 use warnings;
 use strict;
@@ -16,7 +16,7 @@ sub BUILD
 
 =head1 NAME
 
-Artemis::Remote - Common functionality for all remote projects!
+Tapper::Remote - Common functionality for all remote projects!
 
 =head1 VERSION
 
@@ -29,9 +29,9 @@ our $VERSION = '1.000026';
 
 =head1 SYNOPSIS
 
-This module contains functions that are equal for all remote Artemis
-projects (currently Artemis::PRC and Artemis::Installer).
-Artemis::Remote itself does not export functionality but instead is the
+This module contains functions that are equal for all remote Tapper
+projects (currently Tapper::PRC and Tapper::Installer).
+Tapper::Remote itself does not export functionality but instead is the
 base image for all modules of the project.
 
 =head1 EXPORT
@@ -57,4 +57,4 @@ under the same terms as Perl itself.
 
 =cut
 
-1; # End of Artemis::Remote
+1; # End of Tapper::Remote

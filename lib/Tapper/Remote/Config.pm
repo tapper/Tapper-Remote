@@ -1,4 +1,4 @@
-package Artemis::Remote::Config;
+package Tapper::Remote::Config;
 
 use strict;
 use warnings;
@@ -13,39 +13,39 @@ use YAML::Syck;
 
 =head1 NAME
 
-Artemis::Remote::Config - Get configuration from Artemis host
+Tapper::Remote::Config - Get configuration from Tapper host
 
 =head1 SYNOPSIS
 
- use Artemis::Remote::Config;
+ use Tapper::Remote::Config;
 
 =head1 FUNCTIONS
 
 =cut
 
 
-=head2 get_artemis_host
+=head2 get_tapper_host
 
-Get hostname of artemis MCP host from kernel boot parameters.
+Get hostname of tapper MCP host from kernel boot parameters.
 
 @returnlist ($host,port) - string, int - hostname and port of MCP server
 
 =cut
 
-sub get_artemis_host
+sub get_tapper_host
 {
         my ($host, $port);
         # try kernel command line
         open my $FH,'<','/proc/cmdline';
         my $cmd_line = <$FH>;
         close $FH;
-        ($host,undef,$port) = $cmd_line =~ m/artemis_host\s*=\s*(\w+)(:(\d+))?/;
+        ($host,undef,$port) = $cmd_line =~ m/tapper_host\s*=\s*(\w+)(:(\d+))?/;
         return($host,$port) if $host;
 
         # try %ENV
-        if ($ENV{ARTEMIS_MCP_SERVER}) {
-                $host = $ENV{ARTEMIS_MCP_SERVER};
-                $port = $ENV{ARTEMIS_MCP_PORT};
+        if ($ENV{TAPPER_MCP_SERVER}) {
+                $host = $ENV{TAPPER_MCP_SERVER};
+                $port = $ENV{TAPPER_MCP_PORT};
                 return ($host, $port);
         }
 
@@ -99,8 +99,8 @@ sub get_local_data
         # logger will usually be initialised by caller
         my $tmpcfg={};
 
-        my $config_file_name = '/etc/artemis';
-        $config_file_name = $ENV{ARTEMIS_CONFIG} if $ENV{ARTEMIS_CONFIG};
+        my $config_file_name = '/etc/tapper';
+        $config_file_name = $ENV{TAPPER_CONFIG} if $ENV{TAPPER_CONFIG};
 
         my $hostname = $self->gethostname();
 
@@ -113,7 +113,7 @@ sub get_local_data
         die "Usage: $0 [--host=host --port=port --config=file]\n" if $help;
 
         if ($state eq 'install' or (not -e $config_file_name)) {
-                ($server, $port)    = $self->get_artemis_host() if not $server;
+                ($server, $port)    = $self->get_tapper_host() if not $server;
                 my $tftp            = Net::TFTP->new($server);
                 $tftp->get("$hostname-$state", $config_file_name) or return("Can't get local data.",$tftp->error);
                 $tmpcfg->{server}   = $server;
@@ -144,7 +144,7 @@ None.
 
 You can find documentation for this module with the perldoc command.
 
- perldoc Artemis
+ perldoc Tapper
 
 
 =head1 ACKNOWLEDGEMENTS

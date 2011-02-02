@@ -9,7 +9,7 @@ use Log::Log4perl;
 use YAML;
 
 BEGIN {
-        use_ok('Artemis::Remote::Net');
+        use_ok('Tapper::Remote::Net');
  }
 
 
@@ -26,7 +26,7 @@ my $config = {
              };
               
 
-my $net = Artemis::Remote::Net->new($config);
+my $net = Tapper::Remote::Net->new($config);
 
 
 my $report = {

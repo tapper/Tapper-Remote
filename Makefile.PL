@@ -1,7 +1,7 @@
 use inc::Module::Install;
 
-name     'Artemis-Remote';
-all_from 'lib/Artemis/Remote.pm';
+name     'Tapper-Remote';
+all_from 'lib/Tapper/Remote.pm';
 author   'OSRC SysInt Team <osrc-sysint@elbe.amd.com>';
 license  'freebsd';
 

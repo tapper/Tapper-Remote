@@ -1,22 +1,22 @@
-package Artemis::Remote::Net;
+package Tapper::Remote::Net;
 
 use strict;
 use warnings;
 
 use Moose;
 
-extends 'Artemis::Remote';
+extends 'Tapper::Remote';
 
 use IO::Socket::INET;
 use YAML;
 
 =head1 NAME
 
-Artemis::Remote::Net - Communication with MCP
+Tapper::Remote::Net - Communication with MCP
 
 =head1 SYNOPSIS
 
- use Artemis::Remote::Net;
+ use Tapper::Remote::Net;
 
 =head1 FUNCTIONS
 
@@ -118,7 +118,7 @@ The expected hash should contain the following keys:
 * tests    - contains an array of hashes with
 ** error   - indicated whether this test failed (if true)
 ** test    - description of the test
-* headers  - Artemis headers with values
+* headers  - Tapper headers with values
 * sections - array of hashes containing tests and headers ad described above and
              a section_name
 
@@ -192,7 +192,7 @@ None.
 
 You can find documentation for this module with the perldoc command.
 
- perldoc Artemis
+ perldoc Tapper
 
 
 =head1 ACKNOWLEDGEMENTS
