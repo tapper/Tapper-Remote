@@ -10,7 +10,7 @@ build_requires 'Test::Perl::Critic';
 
 requires 'Getopt::Long';
 requires 'Moose';
-requires 'Net::TFTP';
+requires 'Net::TFTP' => "0.19";
 requires 'File::Path';
 requires 'Sys::Hostname';
 requires 'Socket';
