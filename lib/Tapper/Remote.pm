@@ -18,13 +18,9 @@ sub BUILD
 
 Tapper::Remote - Common functionality for all remote projects!
 
-=head1 VERSION
-
-Version 0.01
-
 =cut
 
-our $VERSION = '1.000026';
+our $VERSION = '3.000001';
 
 
 =head1 SYNOPSIS
