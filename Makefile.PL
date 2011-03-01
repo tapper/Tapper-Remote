@@ -18,7 +18,7 @@ requires 'Sys::Hostname';
 requires 'Socket';
 requires 'YAML::Syck';
 requires 'IO::Socket::INET';
-requires 'Tapper::Base' => 0.010019;
+requires 'Tapper::Base' => "3.000001";
 
 auto_install;
 
