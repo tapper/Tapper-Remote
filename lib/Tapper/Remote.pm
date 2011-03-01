@@ -16,7 +16,7 @@ sub BUILD
 
 =head1 NAME
 
-Tapper::Remote - Common functionality for all remote projects!
+Tapper::Remote - Tapper - Common functionality for remote automation libs
 
 =cut
 
