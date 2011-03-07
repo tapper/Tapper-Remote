@@ -8,7 +8,7 @@ use Moose;
 extends 'Tapper::Remote';
 
 use IO::Socket::INET;
-use YAML;
+use YAML::Syck;
 
 =head1 NAME
 

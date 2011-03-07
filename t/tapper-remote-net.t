@@ -6,7 +6,6 @@ use Test::More;
 use Test::MockModule;
 
 use Log::Log4perl;
-use YAML;
 
 BEGIN {
         use_ok('Tapper::Remote::Net');
@@ -42,7 +41,7 @@ my $report = {
 my $message = $net->tap_report_create($report);
 like($message, qr(# First_header: 1), 'First header in tap_report_create');
 like($message, qr(# Second_header: 2), 'Second header in tap_report_create');
-like($message, qr(not ok 1 - First test\nok 2 - Second test), 'Testsin tap_report_create');
+like($message, qr(not ok 1 - First test\nok 2 - Second test), 'Tests in tap_report_create');
 
 my $retval = $net->mcp_inform('start-install');
 
