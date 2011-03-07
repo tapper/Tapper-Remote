@@ -19,7 +19,7 @@ requires 'Net::TFTP' => "0.19";
 requires 'File::Path';
 requires 'Sys::Hostname';
 requires 'Socket';
-requires 'YAML::Syck';
+requires 'YAML::Syck' => "1.17";
 requires 'IO::Socket::INET';
 requires 'Tapper::Base' => "3.000001";
 
