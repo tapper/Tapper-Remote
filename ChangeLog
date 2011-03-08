@@ -1,3 +1,11 @@
+2011-03-08 Steffen Schwigon <steffen.schwigon@amd.com>
+
+	* v3.0.2
+
+	* try to force YAML versions
+
+	* fix YAML vs. YAML::Syck dependencies (rt#66409)
+
 2011-03-02  Steffen Schwigon  <steffen.schwigon@amd.com>
 
 	* v3.0
