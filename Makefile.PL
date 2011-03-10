@@ -25,5 +25,8 @@ requires 'Tapper::Base' => "3.000002";
 
 auto_install;
 
+repository 'git://github.com/amd/Tapper-Reports-Remote.git';
+bugtracker 'http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Tapper-Remote';
+
 WriteAll;
 
