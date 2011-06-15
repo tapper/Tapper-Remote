@@ -5,7 +5,7 @@ use strict;
 use Moose;
 
 extends 'Tapper::Base';
-has cfg =>  (is => 'rw', isa => 'HashRef', default => sub {{mcp_port => 7357, mcp_host => 'localhost'}});
+has cfg =>  (is => 'rw', isa => 'HashRef', default => sub { {} });
 
 sub BUILD
 {
