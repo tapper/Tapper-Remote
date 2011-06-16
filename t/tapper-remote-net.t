@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use POSIX ":sys_wait_h";
 
 
 use Test::More;
@@ -20,10 +21,15 @@ log4perl.appender.root.layout = SimpleLayout";
 Log::Log4perl->init(\$string);
 
 
+my $server = IO::Socket::INET->new(Listen    => 5);
+ok($server, 'create socket');
+
 my $config = {
               mcp_host => 'localhost',
+              mcp_port => $server->sockport(),
              };
-              
+
+
 
 my $net = Tapper::Remote::Net->new($config);
 
