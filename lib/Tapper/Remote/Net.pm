@@ -3,12 +3,13 @@ package Tapper::Remote::Net;
 use strict;
 use warnings;
 
-use Moose;
+use Moose::Role;
 
-extends 'Tapper::Remote';
+requires qw(cfg log);
 
 use IO::Socket::INET;
 use YAML::Syck;
+use URI::Escape;
 
 =head1 NAME
 
@@ -42,10 +43,9 @@ sub mcp_inform
 
 =head2 mcp_send
 
-Tell the MCP server our current status. This is done using a TCP
-connection. Expects message as a hash.
+Tell the MCP server our current status. This is done using a HTTP request.
 
-@param string - message to send to MCP
+@param hash ref - message to send to MCP
 
 @return success - 0
 @return error   - error string
@@ -55,22 +55,43 @@ connection. Expects message as a hash.
 sub mcp_send
 {
         my ($self, $message) = @_;
-        my $server = $self->cfg->{mcp_host} or return "MCP host unknown";
-        my $port   = $self->cfg->{mcp_port} or return "MCP port unknown";
-        $message->{testrun_id} ||= $self->cfg->{test_run};
+        my $server = $self->cfg->{mcp_host} || $self->cfg->{mcp_server} or return "MCP host unknown";
+        my $port   = $self->cfg->{mcp_port} || $self->cfg->{port}       or return "MCP port unknown";
+        $message->{testrun_id} ||= $self->cfg->{testrun_id};
+        my %headers;
 
+        my $url = "GET /state/";
 
-        my $yaml = Dump($message);
+        # state always needs to be first URL part because server uses it as filter
+        $url   .= $message->{state} || 'unknown';
+        delete $message->{state};
+
+        foreach my $key (keys %$message) {
+                if ($message->{$key} =~ m|/| ) {
+                        $headers{$key} = $message->{$key};
+                } else {
+                        $url .= "/$key/";
+                        $url .= uri_escape($message->{$key});
+                }
+        }
+        $url .= " HTTP/1.0\r\n";
+        foreach my $header (keys %headers) {
+                $url .= "X-Tapper-$header: ";
+                $url .= $headers{$header};
+                $url .= "\r\n";
+        }
+
+        $self->log->info("Sending $url to $server");
 	if (my $sock = IO::Socket::INET->new(PeerAddr => $server,
 					     PeerPort => $port,
 					     Proto    => 'tcp')){
-		print $sock ("$yaml");
+		$sock->print("$url\r\n");
 		close $sock;
 	} else {
-                $self->log->error("Can't connect to MCP: $!");
+                $self->log->error("Can't connect to MCP on $server:$port: $!");
+                return("Can't connect to MCP: $!");
 	}
-
-        return 0;
+        return(0);
 }
 
 
@@ -168,7 +189,7 @@ sub nfs_mount
         my ($error, $retval);
         $error = $self->makedir($self->cfg->{paths}{prc_nfs_mountdir});
         return $error if $error;
-        
+
         ($error, $retval) = $self->log_and_exec("mount",
                                                 $self->cfg->{prc_nfs_server}.":".$self->cfg->{paths}{prc_nfs_mountdir},
                                                 $self->cfg->{paths}{prc_nfs_mountdir});

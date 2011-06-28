@@ -2,6 +2,24 @@ use strict;
 use warnings;
 use POSIX ":sys_wait_h";
 
+package Tapper::Remote::Net::Test;
+
+use Moose;
+
+extends 'Tapper::Base';
+
+has cfg => (is      => 'rw',
+            default => sub { {} },
+           );
+sub BUILD
+{
+        my ($self, $config) = @_;
+        $self->{cfg}=$config;
+}
+
+with 'Tapper::Remote::Net';
+
+package main;
 
 use Test::More;
 use Test::MockModule;
@@ -11,6 +29,7 @@ use Log::Log4perl;
 BEGIN {
         use_ok('Tapper::Remote::Net');
  }
+
 
 
 my $string = "
@@ -27,11 +46,12 @@ ok($server, 'create socket');
 my $config = {
               mcp_host => 'localhost',
               mcp_port => $server->sockport(),
+              testrun_id => 1,
              };
 
 
 
-my $net = Tapper::Remote::Net->new($config);
+my $net = Tapper::Remote::Net::Test->new($config);
 
 
 my $report = {
