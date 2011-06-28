@@ -20,7 +20,7 @@ Tapper::Remote - Tapper - Common functionality for remote automation libs
 
 =cut
 
-our $VERSION = '3.000010';
+our $VERSION = '3.000011';
 
 
 =head1 SYNOPSIS
