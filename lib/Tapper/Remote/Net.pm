@@ -22,23 +22,35 @@ Tapper::Remote::Net - Communication with MCP
 =head1 FUNCTIONS
 
 
+
 =head2 mcp_inform
 
-Simplify sending messages to MCP. Expects message as string.
+Generate the message to be send to MCP and hand it over to mcp_send.
+If the message is given as string its converted to hash.
 
-@param string - message to send to MCP
+@param string or hash reference - message to send to MCP
 
 @return success - 0
-@return error   - -1
+@return error   - error string
 
 =cut
 
 sub mcp_inform
 {
+        
         my ($self, $msg) = @_;
-        my $message = {state => $msg};
-        return $self->mcp_send($message);
-}
+        
+        $msg = {state => $msg} if not ref($msg) eq 'HASH';
+        
+        # set PRC number
+        if ($self->cfg->{guest_number}) {
+                $msg->{prc_number} = $self->{cfg}->{guest_number};
+        } else {
+                # guest numbers start with 1, 0 is host or no virtualisation
+                $msg->{prc_number} = 0;
+        }
+        return $self->mcp_send($msg);
+};
 
 
 =head2 mcp_send
