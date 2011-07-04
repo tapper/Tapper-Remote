@@ -69,7 +69,7 @@ sub mcp_send
         my ($self, $message) = @_;
         my $server = $self->cfg->{mcp_host} || $self->cfg->{mcp_server} or return "MCP host unknown";
         my $port   = $self->cfg->{mcp_port} || $self->cfg->{port}       or return "MCP port unknown";
-        $message->{testrun_id} ||= $self->cfg->{testrun_id};
+        $message->{testrun_id} ||= $self->cfg->{testrun_id} || $self->cfg->{test_run};
         my %headers;
 
         my $url = "GET /state/";
