@@ -11,6 +11,7 @@ cover_db
 MANIFEST.bak
 MANIFEST
 META.yml
+MYMETA*
 t/*.sqlite
 
 inc/
