@@ -42,6 +42,15 @@ sub get_tapper_host
         ($host,undef,$port) = $cmd_line =~ m/tapper_host\s*=\s*(\w+)(:(\d+))?/;
         return($host,$port) if $host;
 
+        if (my ($ip) = $cmd_line =~ m/tapper_ip\s*=\s*(\S+)/) {
+                my $iaddr = inet_aton($ip);
+                $host  = gethostbyaddr($iaddr, AF_INET);
+
+                ($port) = $cmd_line =~ m/tapper_port\s*=\s*(\d+)/;
+                  return($host,$port) if $host;
+        }
+
+
         # try %ENV
         if ($ENV{TAPPER_MCP_SERVER}) {
                 $host = $ENV{TAPPER_MCP_SERVER};
@@ -86,10 +95,10 @@ Get local data needed for all tools running locally on NFS. The function tries
 to get the MCP host and fetches the config from there. This reduces any need
 for configuration outside MCP host and thus allows to use unchanged NFS root
 file systems for both testing and production, with different MCP servers and
-so on. 
+so on.
 
 @return success - hash reference containing the config
-@return error   - error string 
+@return error   - error string
 
 =cut
 
