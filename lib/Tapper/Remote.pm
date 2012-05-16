@@ -8,6 +8,12 @@ use Moose;
 extends 'Tapper::Base';
 has cfg =>  (is => 'rw', isa => 'HashRef', default => sub { {} });
 
+=head2 BUILD
+
+Initialize config.
+
+=cut
+
 sub BUILD
 {
         my ($self, $config) = @_;
