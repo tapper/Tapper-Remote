@@ -75,16 +75,16 @@ hostname is set to the DNS hostname associated to this IP address.
 
 sub gethostname
 {
-	my ($self) = @_;
+        my ($self) = @_;
         my $hostname = Sys::Hostname::hostname();
-	if ($hostname   =~ m/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/) {
+        if ($hostname   =~ m/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/) {
                 ($hostname) = gethostbyaddr(inet_aton($hostname), AF_INET) or ( print("Can't get hostname: $!") and exit 1);
                 $hostname   =~ s/^(\w+?)\..+$/$1/;
                 system("hostname", "$hostname");
         } elsif ($hostname  =~ m/^([^\.]+)\./) {
                 $hostname   = $1;
         }
-	return $hostname;
+        return $hostname;
 }
 
 
@@ -138,30 +138,4 @@ sub get_local_data
         return $config;
 }
 
-
 1;
-
-=head1 AUTHOR
-
-AMD OSRC Tapper Team, C<< <tapper at amd64.org> >>
-
-=head1 BUGS
-
-None.
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
- perldoc Tapper
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008-2011 AMD OSRC Tapper Team, all rights reserved.
-
-This program is released under the following license: freebsd
-

@@ -37,11 +37,11 @@ If the message is given as string its converted to hash.
 
 sub mcp_inform
 {
-        
+
         my ($self, $msg) = @_;
-        
+
         $msg = {state => $msg} if not ref($msg) eq 'HASH';
-        
+
         # set PRC number
         if ($self->cfg->{guest_number}) {
                 $msg->{prc_number} = $self->{cfg}->{guest_number};
@@ -94,15 +94,15 @@ sub mcp_send
         }
 
         $self->log->info("Sending $url to $server");
-	if (my $sock = IO::Socket::INET->new(PeerAddr => $server,
-					     PeerPort => $port,
-					     Proto    => 'tcp')){
-		$sock->print("$url\r\n");
-		close $sock;
-	} else {
+        if (my $sock = IO::Socket::INET->new(PeerAddr => $server,
+                                             PeerPort => $port,
+                                             Proto    => 'tcp')){
+                $sock->print("$url\r\n");
+                close $sock;
+        } else {
                 $self->log->error("Can't connect to MCP on $server:$port: $@");
                 return("Can't connect to MCP: $!");
-	}
+        }
         return(0);
 }
 
@@ -123,8 +123,8 @@ sub tap_report_away
         my ($self, $tap) = @_;
         my $reportid;
         if (my $sock = IO::Socket::INET->new(PeerAddr => $self->cfg->{report_server},
-					     PeerPort => $self->cfg->{report_port},
-					     Proto    => 'tcp')) {
+                                             PeerPort => $self->cfg->{report_port},
+                                             Proto    => 'tcp')) {
                 eval{
                         my $timeout = 100;
                         local $SIG{ALRM}=sub{die("timeout for sending tap report ($timeout seconds) reached.");};
@@ -134,10 +134,10 @@ sub tap_report_away
                 };
                 alarm(0);
                 $self->log->error($@) if $@;
-		close $sock;
-	} else {
+                close $sock;
+        } else {
                 return(1,"Can not connect to report server: $!");
-	}
+        }
         return (0,$reportid);
 
 }
@@ -211,28 +211,3 @@ sub nfs_mount
 
 
 1;
-
-=head1 AUTHOR
-
-AMD OSRC Tapper Team, C<< <tapper at amd64.org> >>
-
-=head1 BUGS
-
-None.
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
- perldoc Tapper
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008-2011 AMD OSRC Tapper Team, all rights reserved.
-
-This program is released under the following license: freebsd
-
