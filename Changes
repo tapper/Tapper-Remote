@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+4.0.1     2012-05-16
         - get tapper_host also by IP
         - add mcp_inform suitable for Installer and PRC.
         - big Dist::Zilla roundhouse kick
