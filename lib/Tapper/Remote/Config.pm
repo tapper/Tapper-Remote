@@ -97,6 +97,8 @@ for configuration outside MCP host and thus allows to use unchanged NFS root
 file systems for both testing and production, with different MCP servers and
 so on.
 
+@param string - state
+
 @return success - hash reference containing the config
 @return error   - error string
 
