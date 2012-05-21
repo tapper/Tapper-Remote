@@ -209,6 +209,33 @@ sub nfs_mount
         return 0;
 }
 
+=head2 log_to_file
+
+Turn stdout and stderr into files. This way we get output that would otherwise be lost. The function expects a state that will be used 
+
+@param string - state
+
+@return success - 0
+@return error   - string
+
+=cut
+
+sub log_to_file
+{
+
+        my ($self, $state) = @_;
+        my $output = $self->cfg->{paths}{output_dir};
+        $output   .= "/".($self->cfg->{testrun_id} || $self->cfg->{test_run});
+        $output   .= "/$state";
+
+        my $error  = $self->makedir ($output);
+        return $error if $error;
+
+        $output   .= "/Tapper";
+        open (STDOUT, ">>", "$output.stdout") or $self->logdie("Can't open output file $output.stdout: $!");
+        open (STDERR, ">>", "$output.stderr") or $self->logdie("Can't open output file $output.stderr: $!");
+        return 0;
+}
 
 1;
 
