@@ -23,6 +23,7 @@ package main;
 
 use Test::More;
 use Test::MockModule;
+use File::Temp 'tempdir';
 
 use Log::Log4perl;
 
@@ -43,10 +44,13 @@ Log::Log4perl->init(\$string);
 my $server = IO::Socket::INET->new(Listen    => 5);
 ok($server, 'create socket');
 
+my $tempdir = tempdir(CLEANUP => 1);
+
 my $config = {
               mcp_host => 'localhost',
               mcp_port => $server->sockport(),
               testrun_id => 1,
+              paths => {output_dir => $tempdir },
              };
 
 
@@ -73,5 +77,11 @@ my $retval = $net->mcp_inform('start-install');
 
 # testing message sending is more complex; ignore it for now
 is($retval, 0, 'No error in writing status message');
+
+$retval = $net->log_to_file('install');
+is($retval, 0, 'Log_to_file execution');
+ok(-e "$tempdir/1/install/Tapper.stdout", 'File created by log_to_file');
+diag $tempdir;
+
 
 done_testing;
