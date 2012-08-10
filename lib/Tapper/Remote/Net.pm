@@ -211,7 +211,8 @@ sub nfs_mount
 
 =head2 log_to_file
 
-Turn stdout and stderr into files. This way we get output that would otherwise be lost. The function expects a state that will be used 
+Turn stdout and stderr into files. This way we get output that would
+otherwise be lost. The function expects a state that will be used.
 
 @param string - state
 
