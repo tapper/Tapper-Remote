@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - [FEAT] log_to_file() to put output into file
+        - [DOC] improved API doc
 
 4.0.1     2012-05-16
         - get tapper_host also by IP
