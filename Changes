@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - just version bump for v5
 
 4.1.1     2012-11-19
         - dzil pluginbundle TAPPER
